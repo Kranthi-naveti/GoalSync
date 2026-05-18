@@ -2,6 +2,7 @@
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from '../pages/auth/LoginPage';
+import RegisterPage from '../pages/auth/RegisterPage';
 import ProtectedRoute from '../components/common/ProtectedRoute';
 
 // Employee Pages
@@ -26,9 +27,10 @@ function AppRoutes() {
     <BrowserRouter>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/login" element={<LoginPage />} />
-
+        {/* Public Routes */}
+      <Route path="/" element={<RegisterPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/login" element={<LoginPage />} />
         {/* Employee Routes */}
         <Route
           path="/employee/dashboard"

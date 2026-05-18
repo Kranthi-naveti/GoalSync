@@ -1,8 +1,5 @@
-// src/main/java/com/goalsync/dto/response/RegisterResponse.java
-
 package com.goalsync.dto.response;
 
-import com.goalsync.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RegisterResponse {
 
-    private String message;
+    private String token;
     private String email;
-    private Role role;
+    private String name;   // ✅ Full name of the user
+    private String role;
 }

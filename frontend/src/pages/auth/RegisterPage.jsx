@@ -1,13 +1,12 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import useAuth from '../../hooks/useAuth';
+import { useNavigate, Link } from 'react-router-dom';
 import api from '../../api/api';
 
-function LoginPage() {
-  const { login } = useAuth();
+function RegisterPage() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
+    name: '',
     email: '',
     password: '',
     role: 'employee',
@@ -22,39 +21,27 @@ function LoginPage() {
     }));
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    const response = await api.post('/auth/login', {
-      email: formData.email,
-      password: formData.password,
-    });
+    try {
+      await api.post('/auth/register', {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role.toUpperCase(), // employee -> EMPLOYEE
+      });
 
-    const data = response.data;
-
-    const userData = {
-    name: data.name || data.email, // Use full name if backend returns it
-    email: data.email,
-    role: data.role.toLowerCase(),
-    };
-
-    // Save token and user data
-    login(userData, data.token);
-
-    // Navigate based on backend role
-    if (userData.role === 'employee') {
-      navigate('/employee/dashboard');
-    } else if (userData.role === 'manager') {
-      navigate('/manager/dashboard');
-    } else if (userData.role === 'admin') {
-      navigate('/admin/dashboard');
+      alert('Registration successful! Please login.');
+      navigate('/login');
+    } catch (error) {
+      console.error('Registration failed:', error);
+      alert(
+        error.response?.data?.message ||
+          'Registration failed. Email may already exist.'
+      );
     }
-  } catch (error) {
-    console.error('Login failed:', error);
-    alert('Invalid email or password');
-  }
-};
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -64,11 +51,20 @@ const handleSubmit = async (e) => {
         </h1>
 
         <p className="text-center text-gray-500 mb-6">
-          Goal Setting & Performance Tracking Portal
+          Create a new account
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Email */}
+          <input
+            type="text"
+            name="name"
+            placeholder="Enter your full name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+
           <input
             type="email"
             name="email"
@@ -79,7 +75,6 @@ const handleSubmit = async (e) => {
             className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
 
-          {/* Password */}
           <input
             type="password"
             name="password"
@@ -90,7 +85,6 @@ const handleSubmit = async (e) => {
             className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
 
-          {/* Role Selector */}
           <select
             name="role"
             value={formData.role}
@@ -102,17 +96,26 @@ const handleSubmit = async (e) => {
             <option value="admin">Admin</option>
           </select>
 
-          {/* Login Button */}
           <button
             type="submit"
             className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
           >
-            Login
+            Register
           </button>
         </form>
+
+        <p className="text-center text-sm text-gray-500 mt-6">
+          Already have an account?{' '}
+          <Link
+            to="/login"
+            className="text-purple-600 font-semibold hover:underline"
+          >
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );
 }
 
-export default LoginPage;
+export default RegisterPage;

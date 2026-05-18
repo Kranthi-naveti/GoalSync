@@ -71,9 +71,10 @@ public class AuthServiceImpl implements AuthService {
 
         // Return response
         return new RegisterResponse(
-                "Registration successful",
+                jwtUtil.generateToken(user.getEmail()),
                 user.getEmail(),
-                user.getRole()
+                user.getName(),          // ✅ Send full name
+                user.getRole().name()
         );
     }
 }
